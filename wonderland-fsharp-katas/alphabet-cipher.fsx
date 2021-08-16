@@ -51,7 +51,15 @@ let decode (key:Keyword) (message:Message) : Message =
         |> (fun a -> String(a))
 
 let decipher (cipher:Message) (message:Message) : Keyword =
-    "decypherme"
+    let messageKeyword =
+        Array.zip (message.ToCharArray()) (cipher.ToCharArray())
+            |> Array.map (fun (m, c) -> matrix.[(letterToIndex m), *]  // get a whole row
+                                        |> Array.findIndex(fun r -> r = c)
+                                        |> indexToLetter)
+            |> (fun a -> String(a))
+    // Now we need to un-repeat they keyword 🤔
+    messageKeyword.IsNormalized
+
 
 #r @"../packages/Unquote/lib/net45/Unquote.dll"
 open Swensen.Unquote
