@@ -20,6 +20,7 @@ let indexToLetter (index:int) =
 let matrix =
     Array2D.init 26 26 (fun i j -> (i + j) % 26 |> indexToLetter)
 
+// Repeat the keywork as many times as necessary to get tothe  desired length
 let createMessageKeyword (key:Keyword) (desiredlength:int) : Keyword =
     let replicateTimes =
         (float desiredlength) / (float key.Length) 
@@ -33,17 +34,19 @@ let encode (key:Keyword) (message:Message) : Message =
     let messageKeyword =
         createMessageKeyword key message.Length
         |> (fun s -> s.ToCharArray())
+    // zip the arrays to get pairs of chars
     Array.zip (message.ToCharArray()) messageKeyword
-        |> Array.map (fun (m, k) -> matrix.[(letterToIndex m), (letterToIndex k)] )
+        |> Array.map (fun (m, k) -> matrix.[(letterToIndex m), (letterToIndex k)] )  // look up the value in the matrix 💊
         |> (fun a -> String(a))
 
 let decode (key:Keyword) (message:Message) : Message =
     let messageKeyword =
         createMessageKeyword key message.Length
         |> (fun s -> s.ToCharArray())
+    // zip the arrays to get pairs of chars
     Array.zip (message.ToCharArray()) messageKeyword
-        |> Array.map (fun (m, k) -> matrix.[(letterToIndex k), *]
-                                    |> Array.findIndex(fun c -> c = m)
+        |> Array.map (fun (m, k) -> matrix.[(letterToIndex k), *]  // get a whole row
+                                    |> Array.findIndex(fun r -> r = m)  // find the matching item
                                     |> indexToLetter)
         |> (fun a -> String(a))
 
