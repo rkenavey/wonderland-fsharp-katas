@@ -22,7 +22,7 @@ let matrix =
     Array2D.init 26 26 (fun i j -> (i + j) % 26 |> indexToLetter)
 
 // Repeat the keywork as many times as necessary to get tothe  desired length
-let createMessageKeyword (key:Keyword) (desiredlength:int) : Keyword =
+let createKeyOfLength (key:Keyword) (desiredlength:int) : Keyword =
     let replicateTimes =
         (float desiredlength) / (float key.Length) 
         |> Math.Ceiling
@@ -32,28 +32,33 @@ let createMessageKeyword (key:Keyword) (desiredlength:int) : Keyword =
     |> (fun s -> s.Substring(0, desiredlength))
 
 let encode (key:Keyword) (message:Message) : Message =
-    let messageKeyword =
-        createMessageKeyword key message.Length
+    let messageArray = message.ToCharArray()
+    let keyArray =
+        createKeyOfLength key message.Length
         |> (fun s -> s.ToCharArray())
     // zip the arrays to get pairs of chars
-    Array.zip (message.ToCharArray()) messageKeyword
+    Array.zip messageArray keyArray
         |> Array.map (fun (m, k) -> matrix.[(letterToIndex m), (letterToIndex k)] )  // look up the value in the matrix 💊
         |> (fun a -> String(a))
 
 let decode (key:Keyword) (message:Message) : Message =
-    let messageKeyword =
-        createMessageKeyword key message.Length
+    let messageArray = message.ToCharArray()
+    let keyArray =
+        createKeyOfLength key message.Length
         |> (fun s -> s.ToCharArray())
     // zip the arrays to get pairs of chars
-    Array.zip (message.ToCharArray()) messageKeyword
+    Array.zip messageArray keyArray
         |> Array.map (fun (m, k) -> matrix.[(letterToIndex k), *]  // get a whole row
                                     |> Array.findIndex(fun r -> r = m)  // find the matching item
                                     |> indexToLetter)
         |> (fun a -> String(a))
 
 let decipher (cipher:Message) (message:Message) : Keyword =
+    let messageArray = message.ToCharArray()
+    let cipherArray = cipher.ToCharArray()
     let messageKeyword =
-        Array.zip (message.ToCharArray()) (cipher.ToCharArray())
+        // zip the arrays to get pairs of chars
+        Array.zip messageArray cipherArray
             |> Array.map (fun (m, c) -> matrix.[(letterToIndex m), *]  // get a whole row
                                         |> Array.findIndex(fun r -> r = c)
                                         |> indexToLetter)
@@ -75,10 +80,10 @@ let tests () =
     test <@ indexToLetter 25 = 'z' @>
 
     // verify creating the key for a specific message
-    test <@ createMessageKeyword "abc" 1 = "a" @>
-    test <@ createMessageKeyword "abc" 3 = "abc" @>
-    test <@ createMessageKeyword "abc" 6 = "abcabc" @>
-    test <@ createMessageKeyword "abc" 7 = "abcabca" @>
+    test <@ createKeyOfLength "abc" 1 = "a" @>
+    test <@ createKeyOfLength "abc" 3 = "abc" @>
+    test <@ createKeyOfLength "abc" 6 = "abcabc" @>
+    test <@ createKeyOfLength "abc" 7 = "abcabca" @>
 
     // verify encoding
     test <@ encode "vigilance" "meetmeontuesdayeveningatseven" = "hmkbxebpxpmyllyrxiiqtoltfgzzv" @>
