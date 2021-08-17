@@ -1,6 +1,7 @@
 // See the file alphabet-cipher.md for detailed information.
 
 open System
+open System.Text.RegularExpressions
 
 type Message = string
 type Keyword = string
@@ -57,8 +58,9 @@ let decipher (cipher:Message) (message:Message) : Keyword =
                                         |> Array.findIndex(fun r -> r = c)
                                         |> indexToLetter)
             |> (fun a -> String(a))
-    // Now we need to un-repeat they keyword 🤔
-    messageKeyword.IsNormalized
+    // Now we need to un-repeat the keyword 🤔
+    // https://regex101.com/r/YK2BZu/1 
+    Regex.Match(messageKeyword, @"([a-z]+?)\1").Groups.[1].Value
 
 
 #r @"../packages/Unquote/lib/net45/Unquote.dll"
