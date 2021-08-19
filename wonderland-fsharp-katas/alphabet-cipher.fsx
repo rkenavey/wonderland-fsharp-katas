@@ -32,9 +32,9 @@ let createKeyOfLength (key:Keyword) (desiredlength:int) : Keyword =
     |> (fun s -> s.Substring(0, desiredlength))
 
 let encode (key:Keyword) (message:Message) : Message =
-    let messageArray = message.ToCharArray()
+    let messageArray = message.ToLowerInvariant().ToCharArray()
     let keyArray =
-        createKeyOfLength key message.Length
+        createKeyOfLength (key.ToLowerInvariant()) message.Length
         |> (fun s -> s.ToCharArray())
     // zip the arrays to get pairs of chars
     Array.zip messageArray keyArray
@@ -42,9 +42,9 @@ let encode (key:Keyword) (message:Message) : Message =
         |> (fun a -> String(a))
 
 let decode (key:Keyword) (message:Message) : Message =
-    let messageArray = message.ToCharArray()
+    let messageArray = message.ToLowerInvariant().ToCharArray()
     let keyArray =
-        createKeyOfLength key message.Length
+        createKeyOfLength (key.ToLowerInvariant()) message.Length
         |> (fun s -> s.ToCharArray())
     // zip the arrays to get pairs of chars
     Array.zip messageArray keyArray
@@ -54,8 +54,8 @@ let decode (key:Keyword) (message:Message) : Message =
         |> (fun a -> String(a))
 
 let decipher (cipher:Message) (message:Message) : Keyword =
-    let messageArray = message.ToCharArray()
-    let cipherArray = cipher.ToCharArray()
+    let messageArray = message.ToLowerInvariant().ToCharArray()
+    let cipherArray = cipher.ToLowerInvariant().ToCharArray()
     let messageKeyword =
         // zip the arrays to get pairs of chars
         Array.zip messageArray cipherArray
