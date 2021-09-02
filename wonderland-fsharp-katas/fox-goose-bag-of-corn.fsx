@@ -31,7 +31,7 @@ let riverCrossingPlan () : Positions list =
     ]
 
 
-#r @"../packages/Unquote/lib/net45/Unquote.dll"
+#r "nuget: Unquote"
 open Swensen.Unquote
 
 let invalidTransitions =
