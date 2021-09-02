@@ -24,11 +24,52 @@ let Final = {
     You =   RightBank }
 
 let riverCrossingPlan () : Positions list =
-    [
-        Start
-        // do something here!
-        Final
-    ]
+    // do something here!
+    let plan = [Start]
+
+    let next = { Start with You = Boat; Goose = Boat; }
+    let plan = plan @ [next]
+
+    let next = { next with You = RightBank; Goose = RightBank; }
+    let plan = plan @ [next]
+
+    let next = { next with You = Boat; }
+    let plan = plan @ [next]
+
+    let next = { next with You = LeftBank; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = Boat; Corn = Boat; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = RightBank; Corn = RightBank; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = Boat; Goose = Boat; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = LeftBank; Goose = LeftBank; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = Boat; Fox = Boat; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = RightBank; Fox = RightBank; }
+    let plan = plan @ [next]
+
+    let next = { next with You = Boat; }
+    let plan = plan @ [next]
+
+    let next = { next with You = LeftBank; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = Boat; Goose = Boat; }
+    let plan = plan @ [next]
+    
+    let next = { next with You = RightBank; Goose = RightBank; }
+    let plan = plan @ [next]
+
+    plan
 
 
 #r "nuget: Unquote"
